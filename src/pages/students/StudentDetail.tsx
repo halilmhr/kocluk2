@@ -8,7 +8,7 @@ import BookCard from '../../components/books/BookCard';
 import { 
   ArrowLeft, Book, ClipboardList, Trash2, User, Calendar, Check, 
   School, Phone, Users, GraduationCap, BookOpen, PlusCircle, Clock,
-  ChevronDown, ChevronUp
+  ChevronDown, ChevronUp, FileText, BarChart3
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -227,6 +227,22 @@ const StudentDetail: React.FC = () => {
             className="mt-3 md:mt-0 flex flex-wrap gap-2"
           >
             <Button
+              variant="secondary"
+              onClick={() => navigate(`/student-exam-analysis/${studentId}`)}
+              size="sm"
+            >
+              <BarChart3 size={16} className="mr-1" />
+              Deneme Raporu
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => navigate(`/student-report/${studentId}`)}
+              size="sm"
+            >
+              <FileText size={16} className="mr-1" />
+              Ödev Raporu
+            </Button>
+            <Button
               variant="danger"
               onClick={() => setIsDeleteModalOpen(true)}
               size="sm"
@@ -413,6 +429,46 @@ const StudentDetail: React.FC = () => {
               )}
             </div>
           )}
+        </motion.div>
+        
+        {/* Öğrenci Raporu bölümü */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.5 }}
+          className="overflow-hidden"
+        >
+          <div 
+            className="bg-gradient-to-r from-green-600 to-emerald-600 p-4 rounded-lg cursor-pointer hover:from-green-700 hover:to-emerald-700 transition-colors"
+            onClick={() => navigate(`/student-report/${studentId}`)}
+          >
+            <h2 className="text-xl font-bold text-white flex items-center">
+              <FileText size={20} className="mr-2" />
+              Öğrenci Raporu
+            </h2>
+          </div>
+          
+          {/* Alt butonlar */}
+          <div className="bg-green-50 p-4 flex flex-wrap gap-3">
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/student-report/${studentId}`)}
+              size="sm"
+              className="border-green-500 text-green-700 hover:bg-green-100"
+            >
+              <FileText size={16} className="mr-1" />
+              Ödev Analizi
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/student-exam-analysis/${studentId}`)}
+              size="sm"
+              className="border-green-500 text-green-700 hover:bg-green-100"
+            >
+              <BarChart3 size={16} className="mr-1" />
+              Deneme Analizi
+            </Button>
+          </div>
         </motion.div>
         
         {/* Programlar bölümü */}

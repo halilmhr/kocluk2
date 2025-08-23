@@ -270,11 +270,11 @@ const StudentAssignments: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/student/welcome')}
             className="flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-4"
           >
             <ArrowLeft size={20} className="mr-2" />
-            Ana Sayfaya Dön
+            Öğrenci Ana Sayfası
           </button>
           
           <div className="flex items-center mb-6">

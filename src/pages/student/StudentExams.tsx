@@ -325,7 +325,7 @@ const StudentExams: React.FC = () => {
             className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            Ana Sayfaya Dön
+            Öğrenci Ana Sayfası
           </button>
           <h1 className="text-3xl font-bold text-gray-800">Denemelerim</h1>
           <div></div>

@@ -10,6 +10,8 @@ import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import StudentList from './pages/students/StudentList';
 import StudentDetail from './pages/students/StudentDetail';
+import StudentReport from './pages/students/StudentReport';
+import StudentExamAnalysis from './pages/students/StudentExamAnalysis';
 
 import StudentWelcome from './pages/student/StudentWelcome';
 import StudentAssignments from './pages/student/StudentAssignments';
@@ -70,6 +72,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/students" element={<StudentList />} />
           <Route path="/students/:studentId" element={<StudentDetail />} />
+          <Route path="/student-report/:studentId" element={<StudentReport />} />
+          <Route path="/student-exam-analysis/:studentId" element={<StudentExamAnalysis />} />
           <Route path="/books" element={<BookList />} />
           <Route path="/programs" element={<ProgramList />} />
           <Route path="/programs/new" element={<CreateProgram />} />
