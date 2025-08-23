@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../../store/authStore';
 import { getStudentExams, getExamStatistics, deleteStudentExam, StudentExam, getStudentIdFromAuthUser } from '../../lib/examService';
-import { ArrowLeft, Calendar, TrendingUp, Target, Award, Trash2, BarChart3, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Calendar, TrendingUp, Target, Award, Trash2, BarChart3, ChevronDown, PieChart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import ExamAnalysisChart from '../../components/charts/ExamAnalysisChart';
 
 const StudentExams: React.FC = () => {
   const { user } = useAuthStore();
@@ -14,6 +15,7 @@ const StudentExams: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<'ALL' | 'TYT' | 'AYT' | 'LGS'>('ALL');
   const [expandedExams, setExpandedExams] = useState<Set<string>>(new Set());
+  const [showAnalysis, setShowAnalysis] = useState(false);
 
   const toggleExpanded = (examKey: string) => {
     setExpandedExams(prev => {
@@ -436,6 +438,29 @@ const StudentExams: React.FC = () => {
           ))}
         </div>
 
+        {/* Grafik Analiz Raporu Toggle Button */}
+        {exams.length > 0 && (
+          <div className="mb-6">
+            <button
+              onClick={() => setShowAnalysis(!showAnalysis)}
+              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg"
+            >
+              <PieChart className="w-5 h-5" />
+              {showAnalysis ? 'Grafik Analizi Gizle' : 'Grafik Analiz Raporu'}
+            </button>
+          </div>
+        )}
+
+        {/* Grafik Analiz Raporu */}
+        {showAnalysis && exams.length > 0 && (
+          <div className="mb-6">
+            <ExamAnalysisChart 
+              exams={exams.filter(exam => selectedType === 'ALL' || exam.exam_type === selectedType)} 
+              examType={selectedType}
+            />
+          </div>
+        )}
+
         {/* Exams List */}
         <div className="space-y-4">
           {exams.length === 0 ? (
@@ -475,9 +500,10 @@ const StudentExams: React.FC = () => {
               
               return allDisplayExams.map((item, index) => {
                 if (item.type === 'AYT_GROUP') {
+                  const aytItem = item as { type: 'AYT_GROUP'; examName: string; exams: StudentExam[]; exam_date: string; totalNet: number };
                   return (
                     <motion.div
-                      key={`ayt-${item.examName}`}
+                      key={`ayt-${aytItem.examName}`}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
@@ -486,26 +512,26 @@ const StudentExams: React.FC = () => {
                       <div className="flex items-start justify-between mb-4">
                         <div 
                           className="flex-1 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
-                          onClick={() => toggleExpanded(item.examName)}
+                          onClick={() => toggleExpanded(aytItem.examName)}
                         >
                           <div className="flex items-center gap-3 mb-2">
                             <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                               AYT
                             </span>
-                            <h3 className="text-xl font-bold text-gray-800">{item.examName}</h3>
+                            <h3 className="text-xl font-bold text-gray-800">{aytItem.examName}</h3>
                             <ChevronDown 
                               className={`w-5 h-5 text-gray-500 transition-transform ${
-                                expandedExams.has(item.examName) ? 'rotate-180' : ''
+                                expandedExams.has(aytItem.examName) ? 'rotate-180' : ''
                               }`}
                             />
                           </div>
                           <div className="flex items-center gap-4 text-sm text-gray-600">
                             <div className="flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
-                              {formatDate(item.exam_date)}
+                              {formatDate(aytItem.exam_date)}
                             </div>
                             <div className="font-semibold text-blue-600">
-                              Toplam Net: {item.totalNet.toFixed(2)}
+                              Toplam Net: {aytItem.totalNet.toFixed(2)}
                             </div>
                           </div>
                         </div>
@@ -513,18 +539,19 @@ const StudentExams: React.FC = () => {
                           onClick={(e) => {
                             e.stopPropagation();
                             // Tüm AYT denemelerini sil
-                            item.exams.forEach(exam => handleDeleteExam(exam.id));
+                            aytItem.exams.forEach((exam: StudentExam) => handleDeleteExam(exam.id));
                           }}
                           className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
-                      {expandedExams.has(item.examName) && renderAYTDetails(item.exams)}
+                      {expandedExams.has(aytItem.examName) && renderAYTDetails(aytItem.exams)}
                     </motion.div>
                   );
                 } else {
-                  const exam = item.exam;
+                  const singleItem = item as { type: 'SINGLE'; exam: StudentExam };
+                  const exam = singleItem.exam;
                   return (
                     <motion.div
                       key={exam.id}
