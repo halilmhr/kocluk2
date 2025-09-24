@@ -1,0 +1,1 @@
+-- Row-Level Security (RLS) Politikası - Anonim kullanıcıların ödev tamamlama durumunu güncellemesine izin vermek için
